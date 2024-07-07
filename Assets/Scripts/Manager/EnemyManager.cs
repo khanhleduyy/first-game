@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class EnemyManager : MonoBehaviour
 {
+    [SerializeField] private GameObject gameManager;
+    private MapManager mapManager;
+
+    public event EventHandler OnSpawningAction;
 
     public GameObject[] normalEnemies;
     public GameObject[] bigEnemies;
@@ -36,8 +41,8 @@ public class EnemyManager : MonoBehaviour
     private int maxExBarrel = 2;
 
     private float nEnemyTimer;
-    private float nEnemyMaxTime = 12;
-    private float nEnemyMinTime = 5;
+    private float nEnemyMaxTime = 5;
+    private float nEnemyMinTime = 2;
 
     private float bEnemyTimer;
     private float bEnemyMaxTime = 20;
@@ -55,25 +60,40 @@ public class EnemyManager : MonoBehaviour
     private float exBarrelMaxTime = 20;
     private float exBarrelMinTime = 10;
 
-    
+    private float spawnXOffset = 15;
+    private float spawnYOffset = 3;
     
     void Start()
     {
+        mapManager = gameManager.GetComponent<MapManager>();
         
     }
     void Update()
     {
+        if (!platformGameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
+        if (platformGameManager.Instance.IsGameOver())
+        {
+            return;
+        }
+
         spawnNormalEnemy();
         SpawnBigEnemy();
         SpawnSmallEnemy();
-        SpawnSuicideEnemy();
-        SpawnExplosiveBarrel();
+        //SpawnSuicideEnemy();
+        //SpawnExplosiveBarrel();
     }
-    public void spawnNormalEnemy()
+
+    
+
+    
+    private void spawnNormalEnemy()
     {
         nEnemyTimer += Time.deltaTime;
 
-        float timeToSpawn = Random.Range(nEnemyMinTime, nEnemyMaxTime);
+        float timeToSpawn = UnityEngine.Random.Range(nEnemyMinTime, nEnemyMaxTime);
 
         normalEnemy = NEnemyContainer.childCount;
 
@@ -83,7 +103,7 @@ public class EnemyManager : MonoBehaviour
             SpawnOneNEnemy(normalEnemies);
             nEnemyTimer = 0;           
             normalEnemy++;
-            
+            OnSpawningAction?.Invoke(this, EventArgs.Empty);
                       
         }
         if(normalEnemy >= maxNormalEnemy)
@@ -99,24 +119,20 @@ public class EnemyManager : MonoBehaviour
     }
     private void SpawnOneNEnemy(GameObject[] enemyToSpawn)
     {
-        float x = Random.Range(-15, 15);
-        float y = MapManager.floorPos.y + 9;
-        int rand = Random.Range(0, enemyToSpawn.Length);
+        float x = UnityEngine.Random.Range(-spawnXOffset, spawnXOffset);
+        float y = mapManager.upperPos.y + spawnYOffset;
+        int rand = UnityEngine.Random.Range(0, enemyToSpawn.Length);
 
         
         Vector2 spawnPos = new Vector2(x, y);
         Instantiate(enemyToSpawn[rand], spawnPos, transform.rotation, NEnemyContainer);
-        
-
-        
-        
-        
     }
+    
     public void SpawnBigEnemy()
     {
         bEnemyTimer += Time.deltaTime;
 
-        float timeToSpawn = Random.Range(bEnemyMinTime, bEnemyMaxTime);
+        float timeToSpawn = UnityEngine.Random.Range(bEnemyMinTime, bEnemyMaxTime);
 
         bigEnemy = BEnemyContainer.childCount;
 
@@ -146,9 +162,9 @@ public class EnemyManager : MonoBehaviour
 
     private void SpawnOneBEnemy(GameObject[] enemyToSpawn)
     {
-        float x = Random.Range(-20, 20);
-        float y = MapManager.floorPos.y + 6;
-        int rand = Random.Range(0, enemyToSpawn.Length);
+        float x = UnityEngine.Random.Range(-spawnXOffset, spawnXOffset);
+        float y = mapManager.upperPos.y + spawnYOffset;
+        int rand = UnityEngine.Random.Range(0, enemyToSpawn.Length);
 
         Vector2 spawnPos = new Vector2(x, y);
 
@@ -159,7 +175,7 @@ public class EnemyManager : MonoBehaviour
     {
         sEnemyTimer += Time.deltaTime;
 
-        float timeToSpawn = Random.Range(sEnemyMinTime, sEnemyMaxTime);
+        float timeToSpawn = UnityEngine.Random.Range(sEnemyMinTime, sEnemyMaxTime);
 
         smallEnemy = SEnemyContainer.childCount;
 
@@ -188,15 +204,15 @@ public class EnemyManager : MonoBehaviour
     }
     private void SpawnOneSEnemy(GameObject[] enemyToSpawn)
     {
-        float x = Random.Range(-20, 20);
-        float y = MapManager.floorPos.y + 6;
-        int rand = Random.Range(0, enemyToSpawn.Length);
+        float x = UnityEngine.Random.Range(-spawnXOffset, spawnXOffset);
+        float y = mapManager.upperPos.y + spawnYOffset;
+        int rand = UnityEngine.Random.Range(0, enemyToSpawn.Length);
 
         Vector2 spawnPos = new Vector2(x, y);
 
         Instantiate(enemyToSpawn[rand], spawnPos, transform.rotation, SEnemyContainer);
     }
-
+    /*
     public void SpawnSuicideEnemy()
     {
         suiEnemyTimer += Time.deltaTime;
@@ -277,4 +293,5 @@ public class EnemyManager : MonoBehaviour
 
         Instantiate(barrelToSpawn[rand], spawnPos, transform.rotation, ExBarrelContainer);
     }
+    */
 }

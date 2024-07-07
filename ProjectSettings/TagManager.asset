@@ -14,6 +14,16 @@ TagManager:
   - score
   - ScreenShake
   - GameMusic
+  - PlayerVFX
+  - EnemyVFX
+  - GameManager
+  - CardUI
+  - GameInput
+  - HealthBar
+  - Score
+  - HighScore
+  - ScoreUI
+  - HighScoreUI
   layers:
   - Default
   - TransparentFX
@@ -25,8 +35,8 @@ TagManager:
   - 
   - Ground
   - PostProcessing
-  - 
-  - 
+  - Obstacle
+  - Lava
   - 
   - 
   - 

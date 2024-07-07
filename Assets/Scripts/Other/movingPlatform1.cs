@@ -4,12 +4,26 @@ using UnityEngine;
 
 public class movingPlatform1 : MonoBehaviour
 {
-	private Vector2 startPos;
+    private const string PLAYER = "Player";
+    private const string PLAYER_VFX = "PlayerVFX";
+    private const string ENEMY_VFX = "EnemyVFX";
+    private const string ENEMY = "Enemy";
 
-	public float height;
-	public float speed;
+    private Vector2 startPos;
 
-	private void Start()
+	[SerializeField] private float height;
+	[SerializeField] private float speed;
+    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject enemy;
+
+
+    private void Awake()
+    {
+        player = GameObject.FindGameObjectWithTag(PLAYER);
+        enemy = GameObject.FindGameObjectWithTag(ENEMY);
+    }
+
+    private void Start()
 	{
 		startPos = transform.position;
 
@@ -23,18 +37,18 @@ public class movingPlatform1 : MonoBehaviour
 	}
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("Player"))
+        if (collision.collider.CompareTag(PLAYER_VFX))
         {
             if (transform.position.y < collision.transform.position.y)
             {
-                collision.transform.SetParent(transform);
+                player.transform.SetParent(transform);
 
             }
-        }else if (collision.collider.CompareTag("Enemy"))
+        }else if (collision.collider.CompareTag(ENEMY_VFX))
         {
             if (transform.position.y < collision.transform.position.y)
             {
-                collision.transform.SetParent(transform);
+                enemy.transform.SetParent(transform);
 
             }
         }
@@ -42,15 +56,15 @@ public class movingPlatform1 : MonoBehaviour
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("Player"))
+        if (collision.collider.CompareTag(PLAYER_VFX))
         {
-            collision.transform.SetParent(null);
+            player.transform.SetParent(null);
         }
-        else if (collision.collider.CompareTag("Enemy"))
+        else if (collision.collider.CompareTag(ENEMY_VFX))
         {
            
             
-            collision.transform.SetParent(null);
+            enemy.transform.SetParent(null);
 
             
         }

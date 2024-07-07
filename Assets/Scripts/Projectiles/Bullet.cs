@@ -4,38 +4,56 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private float damage = 20f; 
-    private float timeToDestroy = 3f;
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private const string ENEMY_VFX = "EnemyVFX";
+    private const string ENEMY = "Enemy";
+    private const string PLAYER_VFX = "PlayerVFX";
+    private const string PLAYER = "Player";
 
-    // Update is called once per frame
-    void Update()
-    {
-        Destroy(gameObject, timeToDestroy);
-        
-    }
+    private float damage = 20f;
+    private GameObject enemyAi;
+    private EnemyAi enemyHit;
+    private GameObject player;
+    private Player2 playerHit;
 
-    private void OnTriggerEnter2D(Collider2D other)
+
+    private void Start()
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        enemyAi = GameObject.FindGameObjectWithTag(ENEMY);
+        if(enemyAi != null)
         {
-            Enemy enemyHit = other.gameObject.GetComponent<Enemy>();
-            
-
-            if(enemyHit != null)
-            {
-                Vector3 distance = enemyHit.transform.position - transform.position ;
-                enemyHit.Damage(damage);
-                enemyHit.EnemyRb.AddForce(distance * 500f);
-                Destroy(gameObject);
-                
-            }
+            enemyHit = enemyAi.GetComponent<EnemyAi>();
+        }
+        player = GameObject.FindGameObjectWithTag(PLAYER);
+        if(player != null)
+        {
+            playerHit = player.GetComponent<Player2>();
         }
         
     }
+
+    
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag(ENEMY_VFX))
+        {
+            Vector3 distance = enemyHit.enemyVisual.transform.position - transform.position;
+            enemyHit.Damage(damage);
+            enemyHit.enemyRb.AddForce(distance * 500f);
+            Destroy(gameObject);
+   
+        }
+        else if (other.gameObject.CompareTag(PLAYER_VFX))
+        {
+            Vector3 distance = playerHit.playerVisual.transform.position - transform.position;
+            playerHit.Damage(damage);
+            playerHit.playerRb.AddForce(distance * 500f);
+            Destroy(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
+    }
+ 
 }

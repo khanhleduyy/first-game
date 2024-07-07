@@ -7,27 +7,55 @@ using TMPro;
 public class ScoreManager : MonoBehaviour
 {
     public static int scoreValue = 0;
-    public TextMeshProUGUI score;
-    public TextMeshProUGUI highScore;
+    public GameObject score;
+    public GameObject highScore;
+    private TextMeshProUGUI scoreText;
+    private TextMeshProUGUI highScoreText;
 
     // Start is called before the first frame update
     void Start()
     {
-        score = GameObject.FindGameObjectWithTag("UI").GetComponentInChildren<TextMeshProUGUI>();
+        //score = GameObject.FindGameObjectWithTag("UI").GetComponentInChildren<TextMeshProUGUI>();
         //highScore = GameObject.FindGameObjectWithTag("UI").GetComponentInChildren<TextMeshProUGUI>();
         //score = GetComponent<TextMeshProUGUI>();
-        highScore.text = "High Score: " + PlayerPrefs.GetInt("HighScore", 0).ToString();
+        /*
+        foreach (GameObject score in score)
+        {
+            scoreText = score.GetComponent<TextMeshProUGUI>();
+        }
+        */
+        scoreText = score.GetComponent<TextMeshProUGUI>();
+        highScoreText = highScore.GetComponent<TextMeshProUGUI>();
+        highScoreText.text = "High Score: " + PlayerPrefs.GetInt("HighScore", 0).ToString();
+        GameOverUI.Instance.OnRestartButtonClicked += GameOverUI_OnRestartButtonClicked;
+        GameOverUI.Instance.OnQuitButtonClicked += GameOverUI_OnQuitButtonClicked;
+        GamePausedUI.Instance.OnMainmenuButtonClicked += GamePausedUI_OnMainmenuButtonClicked;
+        //highScore.text = "High Score: " + PlayerPrefs.GetInt("HighScore", 0).ToString();
+    }
+
+    private void GamePausedUI_OnMainmenuButtonClicked(object sender, System.EventArgs e)
+    {
+        scoreValue = 0;
+    }
+
+    private void GameOverUI_OnRestartButtonClicked(object sender, System.EventArgs e)
+    {
+        scoreValue = 0;
+    }
+    private void GameOverUI_OnQuitButtonClicked(object sender, System.EventArgs e)
+    {
+        scoreValue = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        score.text = "" + scoreValue;
+        scoreText.text = "" + scoreValue;
 
         if(scoreValue > PlayerPrefs.GetInt("HighScore", 0))
         {
             PlayerPrefs.SetInt("HighScore", scoreValue);
-            highScore.text = "High Score: " + scoreValue.ToString();
+            highScoreText.text = "High Score: " + scoreValue.ToString();
         }
         
         

@@ -4,18 +4,28 @@ using UnityEngine;
 
 public class CamMovement : MonoBehaviour
 {
-    public Transform player;
-    public Vector3 offset;
-    public float speed;
+    private const string PLAYER_VFX = "PlayerVFX";
+
+    [SerializeField] private GameObject playerVisual;
+    [SerializeField] private Vector3 offset;
+    [SerializeField] private float speed;
     void Start()
     {
-        
+        playerVisual = GameObject.FindGameObjectWithTag(PLAYER_VFX);
     }
 
     
     void Update()
     {
-        Vector3 desiredPos = player.position + offset;
-        transform.position = Vector3.Lerp(transform.position, desiredPos, speed * Time.deltaTime);
+        if(playerVisual == null)
+        {
+            playerVisual = GameObject.FindGameObjectWithTag(PLAYER_VFX);
+        }
+        if (playerVisual != null)
+        {
+            Vector3 desiredPos = playerVisual.transform.position + offset;
+            transform.position = Vector3.Lerp(transform.position, desiredPos, speed * Time.deltaTime);
+        }
+        
     }
 }

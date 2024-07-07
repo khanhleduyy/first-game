@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlatformRotation : MonoBehaviour
 {
     private float rotZ;
-    public float rotationSpeed;
-    public bool clockWiseRot;
+    [SerializeField] float rotationSpeed;
+    [SerializeField] bool clockWiseRot;
     private void Update()
     {
         if (!clockWiseRot)

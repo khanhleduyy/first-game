@@ -1,24 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
+using System;
 
 public class MapManager : MonoBehaviour
 {
-    public static Vector2 rightPos, leftPos;
-    public static Vector2 middlePos;
-    public static Vector2 floorPos;
+    [SerializeField] private GameObject[] upperPlatform;
+    [SerializeField] private GameObject[] lowerPlatform;
+    [SerializeField] private GameObject aStar;
+    [SerializeField] private Transform MapContainer;
+    private AstarPath astarPath;
 
-    public GameObject[] sidePlatform;
-    public GameObject[] middlePlatform;
-    public GameObject[] floor;
+    private Vector2 lowerPos;
+    public Vector2 upperPos;
+    private float platformPos = 6f;
 
-    public Transform MapContainer;
+ 
 
     private List<GameObject> parts;
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        astarPath = aStar.GetComponent<AstarPath>();
+    }
+
     void Start()
     {
         parts = new List<GameObject>();
+        GenerateMap();
+
+        InvokeRepeating("UpdateScan", 0f, .2f);
+        GameOverUI.Instance.OnRestartButtonClicked += GameOverUI_OnRestartButtonClicked;
+    }
+
+    private void GameOverUI_OnRestartButtonClicked(object sender, EventArgs e)
+    {
+        CleanMap();
         GenerateMap();
     }
 
@@ -28,18 +47,20 @@ public class MapManager : MonoBehaviour
        
     }
 
+    private void UpdateScan()
+    {
+        astarPath.Scan();
+    }
+
     public void GenerateMap()
     {
         parts = new List<GameObject>();
-        rightPos = new Vector2(-27, 5);
-        leftPos = new Vector2(27, 5);
-        floorPos = new Vector2(0, -7);
-        //middlePos = new Vector2(0, 7);
+        lowerPos = new Vector2(0, -platformPos);
+        upperPos = new Vector2(0, platformPos);
 
-        parts.Add(Instantiate(floor[Random.Range(0, sidePlatform.Length)], floorPos, transform.rotation, MapContainer));
+        parts.Add(Instantiate(lowerPlatform[UnityEngine.Random.Range(0, lowerPlatform.Length)], lowerPos, transform.rotation, MapContainer));
         //parts.Add(Instantiate(middlePlatform[Random.Range(0, sidePlatform.Length)], middlePos, transform.rotation, MapContainer));
-        parts.Add(Instantiate(sidePlatform[Random.Range(0, sidePlatform.Length)], rightPos, transform.rotation, MapContainer));
-        parts.Add(Instantiate(sidePlatform[Random.Range(0, sidePlatform.Length)], leftPos, transform.rotation, MapContainer));
+        parts.Add(Instantiate(upperPlatform[UnityEngine.Random.Range(0, upperPlatform.Length)], upperPos, transform.rotation, MapContainer));
     }
 
     public void CleanMap()

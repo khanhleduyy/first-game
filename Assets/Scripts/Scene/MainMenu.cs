@@ -2,26 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    
+    [SerializeField] private Button playButton;
+    [SerializeField] private Button quitButton;
 
     private void Awake()
     {
-        
+        playButton.onClick.AddListener(PlayGame);
+        quitButton.onClick.AddListener(QuitGame);
+        Time.timeScale = 1f;
     }
     public void PlayGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-        
+        Loader.Load(Loader.Scene.GameScene);
     }
     public void QuitGame()
     {
         Application.Quit();
-    }
-    public void Option()
-    {
-        SceneManager.LoadScene(3);
     }
 }
